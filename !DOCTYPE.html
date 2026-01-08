@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Agri Animal Protection</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f0f8f5;
+    }
+    video {
+      width: 90%;
+      max-width: 400px;
+      border: 2px solid green;
+      border-radius: 10px;
+    }
+    .btn {
+      padding: 10px 15px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #status {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>AI Based Humane Animal Detection (Prototype)</h2>
+
+<video id="camera" autoplay></video>
+
+<p id="status">No animal detected</p>
+<p id="animalInfo"></p>
+
+<h3>Simulate Animal Arrival</h3>
+<button class="btn" onclick="detectAnimal('Elephant')">Elephant</button>
+<button class="btn" onclick="detectAnimal('Pig')">Pig</button>
+<button class="btn" onclick="detectAnimal('Cow')">Cow</button>
+<button class="btn" onclick="detectAnimal('Bird')">Bird</button>
+
+<script>
+/* CAMERA AUTO ACTIVATE */
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    document.getElementById("camera").srcObject = stream;
+  })
+  .catch(() => {
+    alert("Camera access denied");
+  });
+
+function detectAnimal(animal) {
+  const status = document.getElementById("status");
+  const info = document.getElementById("animalInfo");
+
+  status.innerText = "⚠ Animal Detected!";
+  status.style.color = "red";
+
+  let frequencyText = "";
+  let soundFreq = 0;
+
+  if (animal === "Elephant") {
+    frequencyText = "Low frequency deterrent activated";
+    soundFreq = 200;
+  } else if (animal === "Pig") {
+    frequencyText = "Medium frequency deterrent activated";
+    soundFreq = 600;
+  } else if (animal === "Cow") {
+    frequencyText = "Medium-Low frequency deterrent activated";
+    soundFreq = 400;
+  } else if (animal === "Bird") {
+    frequencyText = "High frequency deterrent activated";
+    soundFreq = 1200;
+  }
+
+  info.innerHTML = `
+    <b>Animal:</b> ${animal}<br>
+    <b>Sound:</b> ${frequencyText}
+  `;
+
+  playSound(soundFreq);
+}
+
+/* SIMPLE BEEP (PROTOTYPE ONLY) */
+function playSound(freq) {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  oscillator.type = "sine";
+  oscillator.frequency.value = freq;
+  oscillator.connect(audioCtx.destination);
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+  }, 600);
+}
+</script>
+
+</body>
+</html>
